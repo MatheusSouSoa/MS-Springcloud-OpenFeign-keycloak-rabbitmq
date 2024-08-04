@@ -1,10 +1,10 @@
 package com.springcloud.keycloak.msclientes.application.service;
 
+import com.springcloud.keycloak.msclientes.application.usecase.GetClienteByCpfUseCase;
+import com.springcloud.keycloak.msclientes.application.usecase.SaveClienteUseCase;
 import com.springcloud.keycloak.msclientes.domain.model.Cliente;
-import com.springcloud.keycloak.msclientes.infra.persistence.JpaClienteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Optional;
 
@@ -12,14 +12,14 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ClienteService {
 
-    private final JpaClienteRepository repository;
+    private final SaveClienteUseCase saveClienteUseCase;
+    private final GetClienteByCpfUseCase getClienteByCpfUseCase;
 
-    @Transactional
     public Cliente save(Cliente cliente) {
-        return repository.save(cliente);
+        return saveClienteUseCase.execute(cliente);
     }
 
     public Optional<Cliente> getByCpf(String cpf) {
-        return repository.findByCpf(cpf);
+        return getClienteByCpfUseCase.execute(cpf);
     }
 }

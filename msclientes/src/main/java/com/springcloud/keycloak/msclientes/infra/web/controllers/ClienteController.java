@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import java.net.URI;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/api/clientes")
@@ -37,7 +38,7 @@ public class ClienteController {
     }
 
     @GetMapping(params = "cpf")
-    public ResponseEntity<?> dadosCliente (@RequestParam("cpf") String cpf) {
+    public ResponseEntity<Optional<Cliente>> dadosCliente (@RequestParam("cpf") String cpf) {
         var cliente = service.getByCpf(cpf);
 
         if(cliente.isEmpty()) {
