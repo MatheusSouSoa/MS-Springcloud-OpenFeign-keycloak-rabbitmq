@@ -15,4 +15,4 @@ eureka:
     fetch-registry: true
     register-with-eureka: true
     service-url:
-      defaultZone: http://10.0.0.105:8761/eureka
+      defaultZone: http://cursoms-eureka-user:senha-super-dificil@10.0.0.105:8761/eureka
