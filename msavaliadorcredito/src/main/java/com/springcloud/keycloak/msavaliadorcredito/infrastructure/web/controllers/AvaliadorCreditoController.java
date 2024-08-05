@@ -1,11 +1,10 @@
 package com.springcloud.keycloak.msavaliadorcredito.infrastructure.web.controllers;
 
 import com.springcloud.keycloak.msavaliadorcredito.application.service.AvaliadorCreditoService;
-import com.springcloud.keycloak.msavaliadorcredito.domain.models.DadosAvaliacao;
-import com.springcloud.keycloak.msavaliadorcredito.domain.models.RetornoAvaliacaoCliente;
-import com.springcloud.keycloak.msavaliadorcredito.domain.models.SituacaoCliente;
+import com.springcloud.keycloak.msavaliadorcredito.domain.models.*;
 import com.springcloud.keycloak.msavaliadorcredito.exceptions.DadosClienteNotFoundException;
 import com.springcloud.keycloak.msavaliadorcredito.exceptions.ErroComunicacaoMicroservicesException;
+import com.springcloud.keycloak.msavaliadorcredito.exceptions.ErroSolicitacaoCartaoException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -42,7 +41,7 @@ public class AvaliadorCreditoController {
     }
 
     @PostMapping
-    public ResponseEntity realizarAvaliacao (@RequestBody DadosAvaliacao dados) {
+    public ResponseEntity<?> realizarAvaliacao (@RequestBody DadosAvaliacao dados) {
         try {
             RetornoAvaliacaoCliente retornoAvaliacaoCliente = avaliadorCreditoService.realizarAvaliacao(dados.getCpf(), dados.getRenda());
             return ResponseEntity.ok(retornoAvaliacaoCliente);
@@ -56,6 +55,17 @@ public class AvaliadorCreditoController {
             return ResponseEntity.status(status).body(e.getMessage());
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Erro interno no servidor");
+        }
+    }
+
+    @PostMapping("solicitacoes-cartao")
+    public ResponseEntity<?> solicitarCartao(@RequestBody DadosSolicitacaoEmissaoCartao dados) {
+
+        try {
+            ProtocoloSolicitacaoCartao protocoloSolicitacaoCartao = avaliadorCreditoService.solicitarEmissaoCartao(dados);
+            return ResponseEntity.ok(protocoloSolicitacaoCartao);
+        } catch (ErroSolicitacaoCartaoException e) {
+            return ResponseEntity.internalServerError().body(e.getMessage());
         }
     }
 }

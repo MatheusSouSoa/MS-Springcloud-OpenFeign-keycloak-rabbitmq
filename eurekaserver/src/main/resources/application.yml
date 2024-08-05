@@ -1,11 +1,17 @@
 spring:
   application:
     name: eurekaserver
+  security:
+    basic:
+      enabled: true
+    user:
+      name: cursoms-eureka-user
+      password: senha-super-dificil
 
 server:
   port: 8761
 
-eurekka:
+eureka:
   client:
     register-with-eureka: false
     fetch-registry: false

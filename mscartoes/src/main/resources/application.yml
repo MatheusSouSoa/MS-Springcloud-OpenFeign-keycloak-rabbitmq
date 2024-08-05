@@ -1,6 +1,11 @@
 spring:
   application:
     name: mscartoes
+  rabbitmq:
+    host: 10.0.0.109
+    port: 5672
+    username: guest
+    password: guest
 
 server:
   port: 0
@@ -11,3 +16,7 @@ eureka:
       defaultZone: http://10.0.0.105:8761/eureka
   instance:
     instance-id: ${spring.application.name}:${spring-cloud.application.instance_id:${random.value}}
+
+mq:
+  queues:
+    emissao-cartoes: emissao-cartoes

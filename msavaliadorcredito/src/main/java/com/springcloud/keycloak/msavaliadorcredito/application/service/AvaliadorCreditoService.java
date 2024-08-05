@@ -6,8 +6,10 @@ import com.springcloud.keycloak.msavaliadorcredito.application.usecases.GetRenda
 import com.springcloud.keycloak.msavaliadorcredito.domain.models.*;
 import com.springcloud.keycloak.msavaliadorcredito.exceptions.DadosClienteNotFoundException;
 import com.springcloud.keycloak.msavaliadorcredito.exceptions.ErroComunicacaoMicroservicesException;
+import com.springcloud.keycloak.msavaliadorcredito.exceptions.ErroSolicitacaoCartaoException;
 import com.springcloud.keycloak.msavaliadorcredito.infrastructure.clients.CartoesResourceClient;
 import com.springcloud.keycloak.msavaliadorcredito.infrastructure.clients.ClienteResourceClient;
+import com.springcloud.keycloak.msavaliadorcredito.infrastructure.messaging.SolitacaoEmissaoCartaoPublisher;
 import feign.FeignException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -16,6 +18,7 @@ import org.springframework.stereotype.Service;
 
 import java.math.BigDecimal;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +28,7 @@ public class AvaliadorCreditoService {
     private final GetDadosClienteUseCase getDadosClienteUseCase;
     private final GetCartoesByClienteUseCase getCartoesByCliente;
     private final GetRendaAteUseCase getRendaAteUseCase;
+    private final SolitacaoEmissaoCartaoPublisher emissaoCartaoPublisher;
 
     public SituacaoCliente obterSituacaoCliente(String cpf) throws  DadosClienteNotFoundException, ErroComunicacaoMicroservicesException{
 
@@ -77,6 +81,17 @@ public class AvaliadorCreditoService {
                 throw new DadosClienteNotFoundException();
             }
             throw new ErroComunicacaoMicroservicesException(e.getMessage(), status);
+        }
+    }
+
+    public ProtocoloSolicitacaoCartao solicitarEmissaoCartao (DadosSolicitacaoEmissaoCartao dados) {
+        try{
+
+            emissaoCartaoPublisher.solicitarCartao(dados);
+            return new ProtocoloSolicitacaoCartao(UUID.randomUUID().toString());
+
+        } catch (Exception e) {
+            throw new ErroSolicitacaoCartaoException(e.getMessage());
         }
     }
 }
