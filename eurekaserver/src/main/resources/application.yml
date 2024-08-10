@@ -5,8 +5,8 @@ spring:
     basic:
       enabled: true
     user:
-      name: cursoms-eureka-user
-      password: senha-super-dificil
+      name: admin
+      password: admin
 
 server:
   port: 8761
